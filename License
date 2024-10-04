@@ -1,0 +1,41 @@
+**EvoSphere Open Source Software License Agreement**
+
+This Open Source Software License Agreement (the "Agreement") is entered into between EvoShpere Studio (the "Author") and you (the "User"), whether an individual or an entity. By downloading, installing, using, or otherwise accessing the software (the "Software"), you agree to be bound by the terms and conditions of this Agreement. If you do not agree to these terms, do not use the Software.
+
+**1. License Grant and Restrictions**
+
+1.1 **License Grant**: The Author hereby grants to the User a non-exclusive, non-transferable license to use the Software, subject to the terms and conditions of this Agreement. This license is strictly for personal, non-commercial use only. The User may not use the Software for any commercial purposes, including but not limited to selling, renting, leasing, sublicensing, or distributing the Software or any part thereof, or providing commercial services based on the Software.
+
+1.2 **Restrictions**: The User shall not reverse engineer, decompile, disassemble, or otherwise attempt to derive the source code of the Software. The User shall not modify, create derivative works from, or distribute the Software or any part thereof, except as expressly permitted by this Agreement. The User shall not remove, obscure, or alter any copyright notices, trademarks, or other proprietary rights notices contained in or on the Software.
+
+**2. Open Source Requirements**
+
+2.1 **Open Source Requirement**: Any software that incorporates, uses, or is derived from the Software must be made available under an open-source license. The User must ensure that any modifications or derivative works of the Software are also made available under the same open-source license.
+
+2.2 **Attribution Requirement**: Any software that incorporates, uses, or is derived from the Software must include a clear and conspicuous attribution to the original project name and the Author. The User must include the project name and the Author's name in any documentation, source code, or other materials related to the software.
+
+**3. Disclaimer of Warranties**
+
+3.1 **Disclaimer**: THE SOFTWARE IS PROVIDED "AS IS" AND "AS AVAILABLE," WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE, AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR ANY CLAIM, DAMAGES, OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT, OR OTHERWISE, ARISING FROM, OUT OF, OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+
+**4. Limitation of Liability**
+
+4.1 **Limitation of Liability**: TO THE MAXIMUM EXTENT PERMITTED BY APPLICABLE LAW, THE AUTHOR SHALL NOT BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, CONSEQUENTIAL, OR EXEMPLARY DAMAGES, INCLUDING BUT NOT LIMITED TO DAMAGES FOR LOSS OF PROFITS, GOODWILL, USE, DATA, OR OTHER INTANGIBLE LOSSES (EVEN IF THE AUTHOR HAS BEEN ADVISED OF THE POSSIBILITY OF SUCH DAMAGES), RESULTING FROM THE USE OR THE INABILITY TO USE THE SOFTWARE.
+
+**5. Governing Law and Dispute Resolution**
+
+5.1 **Governing Law**: This Agreement shall be governed by and construed in accordance with the laws of [Jurisdiction], without giving effect to any principles of conflicts of law.
+
+5.2 **Dispute Resolution**: Any dispute arising out of or related to this Agreement shall be resolved through binding arbitration in accordance with the rules of [Arbitration Institution]. The arbitration shall take place in [City, State/Country]. The decision of the arbitrator shall be final and binding on both parties.
+
+**6. Miscellaneous**
+
+6.1 **Entire Agreement**: This Agreement constitutes the entire agreement between the Author and the User concerning the Software and supersedes all prior agreements, understandings, and negotiations, whether written or oral, relating to the Software.
+
+6.2 **Waiver**: The failure of the Author to enforce any provision of this Agreement shall not constitute a waiver of that provision.
+
+6.3 **Severability**: If any provision of this Agreement is held to be invalid or unenforceable, such provision shall be struck, and the remaining provisions shall be enforced.
+
+6.4 **No Additional Terms**: No additional terms or conditions, whether oral or written, shall be binding on the Author unless expressly agreed to in writing by the Author.
+
+**BY USING THE SOFTWARE, YOU ACKNOWLEDGE THAT YOU HAVE READ AND UNDERSTAND THIS AGREEMENT AND AGREE TO BE BOUND BY ITS TERMS.**
