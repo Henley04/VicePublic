@@ -19,10 +19,9 @@ file_path = f'{current_working_directory}/config.ini'
 config = configparser.ConfigParser()
 
 # 读取 INI 文件
-# 以UTF-8编码打开文件
-with open(f'{file_path}', 'r', encoding='utf-8') as configfile:
-    # 使用 read_file 方法读取文件
-    config.read_file(configfile)
+# 以GBK编码打开文件
+with open(f'{os.getcwd()}/config.ini', 'r', encoding='gbk') as file:
+    config.read_file(file)
 
 
 # 如果没有默认的 section，添加一个

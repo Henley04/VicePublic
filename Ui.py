@@ -1,9 +1,43 @@
 import os
+import time
 import tkinter as tk
 from tkinter import ttk, messagebox
 import subprocess
 import configparser
+import requests
+import requests
 
+
+def get_public_ip(url):
+    global ip
+    try:
+        response = requests.get(url, timeout=5)
+        response.raise_for_status()  # 如果响应状态码不是200，将会抛出异常
+        return response.text.strip()
+    except requests.RequestException as e:
+        print(f"Error fetching IP from {url}: {e}")
+        return None
+
+
+# 不同网站的URL列表，这些URL会直接返回访问者的IP地址
+ip_services = [
+    'https://api.ipify.org',
+    'https://ifconfig.me/ip',
+    'https://icanhazip.com/',
+    'https://ident.me/',
+    'https://checkip.amazonaws.com/'
+]
+
+# 获取并打印IP地址
+for service in ip_services:
+    ip = get_public_ip(service)
+    if ip:
+        print(f"Your public IP from {service} is: {ip}")
+    else:
+        print(f"Could not retrieve IP from {service}")
+
+
+time.sleep(0.1)
 # 创建主窗口
 root = tk.Tk()
 root.title("SetServerINI")
@@ -33,6 +67,9 @@ label3.grid(row=2, column=0, padx=10, pady=10, sticky=tk.W)
 entry3 = ttk.Entry(root, width=30)
 entry3.grid(row=2, column=1, padx=10, pady=10, sticky=tk.W+tk.E)
 
+label4 = ttk.Label(root, text=f'IP:{ip}')
+label4.grid(row=6, column=0, padx=10, pady=10, sticky=tk.W)
+
 # 下拉选择框
 # 第一个下拉选择框
 label3 = ttk.Label(root, text="模型:")
@@ -51,6 +88,8 @@ options1 = ['是', '否']
 combobox2 = ttk.Combobox(root, values=options1, state='readonly')
 combobox2.current(0)  # 默认选中第一个选项
 combobox2.grid(row=4, column=1, padx=10, pady=10, sticky=tk.W+tk.E)  # 改为第3行
+
+
 # 确认按钮
 def on_confirm():
     # 收集输入信息
@@ -59,8 +98,6 @@ def on_confirm():
     input3 = entry3.get()
     selected_option = combobox1.get()
     selected_option1 = combobox2.get()
-
-
     # 显示确认对话框
     if messagebox.askokcancel("确认", "你确定要提交吗？"):
         # 打印收集到的数据
@@ -73,7 +110,8 @@ def on_confirm():
         config = configparser.ConfigParser()
 
         # 读取现有的INI文件
-        config.read(f'{os.getcwd()}/config.ini')
+        with open(f'{os.getcwd()}/config.ini', 'r', encoding='gbk') as file:
+            config.read_file(file)
 
         # 修改或添加新的键值对
         # 如果section不存在，则会创建新的section
