@@ -1,25 +1,24 @@
 import os
-import time
 import tkinter as tk
 from tkinter import ttk, messagebox
-import subprocess
 import configparser
 import requests
-import requests
+import subprocess
 
+# 创建ConfigParser对象
+config = configparser.ConfigParser()
 
-def get_public_ip(url):
-    global ip
-    try:
-        response = requests.get(url, timeout=5)
-        response.raise_for_status()  # 如果响应状态码不是200，将会抛出异常
-        return response.text.strip()
-    except requests.RequestException as e:
-        print(f"Error fetching IP from {url}: {e}")
-        return None
+def get_public_ip(url, retries=3):
+    for _ in range(retries):
+        try:
+            response = requests.get(url, timeout=5)
+            response.raise_for_status()
+            return response.text.strip()
+        except requests.RequestException as e:
+            print(f"Error fetching IP from {url}: {e}")
+    return None
 
-
-# 不同网站的URL列表，这些URL会直接返回访问者的IP地址
+# 不同网站的URL列表
 ip_services = [
     'https://api.ipify.org',
     'https://ifconfig.me/ip',
@@ -29,117 +28,115 @@ ip_services = [
 ]
 
 # 获取并打印IP地址
+ip = None
 for service in ip_services:
     ip = get_public_ip(service)
     if ip:
         print(f"Your public IP from {service} is: {ip}")
-    else:
-        print(f"Could not retrieve IP from {service}")
+        break
+else:
+    print("Could not retrieve IP from any service")
 
+# 读取现有的INI文件
+config_file_path = f'{os.getcwd()}/config.ini'
+if os.path.exists(config_file_path):
+    with open(config_file_path, 'r', encoding='ansi') as file:
+        config.read_file(file)
+else:
+    with open(config_file_path, 'w', encoding='ansi') as configfile:
+        config.write(configfile)
 
-time.sleep(0.1)
 # 创建主窗口
 root = tk.Tk()
 root.title("SetServerINI")
-root.geometry("800x400")  # 设置窗口大小
+root.geometry("800x400")
 
 # 设置风格
 style = ttk.Style(root)
-style.theme_use('clam')  # 使用'clam'主题，还有其他如'aqua', 'alt', 'default', 'classic'
+style.theme_use('clam')
 
-# 标签与输入框1
+# 标签与输入框
 label1 = ttk.Label(root, text="AppID:")
 label1.grid(row=0, column=0, padx=10, pady=10, sticky=tk.W)
 
 entry1 = ttk.Entry(root, width=30)
-entry1.grid(row=0, column=1, padx=10, pady=10, sticky=tk.W+tk.E)
+entry1.grid(row=0, column=1, padx=10, pady=10, sticky=tk.W + tk.E)
+entry1.insert(0, config.get('Settings', 'Id', fallback=''))
 
-# 标签与输入框2
 label2 = ttk.Label(root, text="AppSecret:")
 label2.grid(row=1, column=0, padx=10, pady=10, sticky=tk.W)
 
 entry2 = ttk.Entry(root, width=30)
-entry2.grid(row=1, column=1, padx=10, pady=10, sticky=tk.W+tk.E)
+entry2.grid(row=1, column=1, padx=10, pady=10, sticky=tk.W + tk.E)
+entry2.insert(0, config.get('Settings', 'Secret', fallback=''))
+
+label_Auth = ttk.Label(root, text="SparkAuth:")
+label_Auth.grid(row=5, column=0, padx=10, pady=10, sticky=tk.W)
+
+entry_Auth = ttk.Entry(root, width=30)
+entry_Auth.grid(row=5, column=1, padx=10, pady=10, sticky=tk.W + tk.E)
+entry_Auth.insert(0, config.get('Settings', 'SparkAuth', fallback=''))
 
 label3 = ttk.Label(root, text="提示词:")
 label3.grid(row=2, column=0, padx=10, pady=10, sticky=tk.W)
 
 entry3 = ttk.Entry(root, width=30)
-entry3.grid(row=2, column=1, padx=10, pady=10, sticky=tk.W+tk.E)
+entry3.grid(row=2, column=1, padx=10, pady=10, sticky=tk.W + tk.E)
+entry3.insert(0, config.get('Settings', 'prompt', fallback=''))
 
 label4 = ttk.Label(root, text=f'IP:{ip}')
 label4.grid(row=6, column=0, padx=10, pady=10, sticky=tk.W)
 
 # 下拉选择框
-# 第一个下拉选择框
-label3 = ttk.Label(root, text="模型:")
-label3.grid(row=3, column=0, padx=10, pady=10, sticky=tk.W)
+label_model = ttk.Label(root, text="模型:")
+label_model.grid(row=3, column=0, padx=10, pady=10, sticky=tk.W)
 
-options = ['Spark4.0Ultra', 'N/A', 'N/A']
+options = ['4.0Ultra', 'general', 'N/A']
 combobox1 = ttk.Combobox(root, values=options, state='readonly')
-combobox1.current(0)  # 默认选中第一个选项
-combobox1.grid(row=3, column=1, padx=10, pady=10, sticky=tk.W+tk.E)
+model_default = config.get('Settings', 'model', fallback='4.0Ultra')
+combobox1.current(options.index(model_default))
+combobox1.grid(row=3, column=1, padx=10, pady=10, sticky=tk.W + tk.E)
 
-# 第二个下拉选择框
-label4 = ttk.Label(root, text="IfBlock:")
-label4.grid(row=4, column=0, padx=10, pady=10, sticky=tk.W)  # 改为第3行
+label_ifblock = ttk.Label(root, text="IfBlock:")
+label_ifblock.grid(row=4, column=0, padx=10, pady=10, sticky=tk.W)
 
 options1 = ['是', '否']
 combobox2 = ttk.Combobox(root, values=options1, state='readonly')
-combobox2.current(0)  # 默认选中第一个选项
-combobox2.grid(row=4, column=1, padx=10, pady=10, sticky=tk.W+tk.E)  # 改为第3行
-
+blocksplit_default = config.get('Settings', 'BlockSplit', fallback='是')
+blocksplit_value = '是' if blocksplit_default == '1' else '否'
+combobox2.current(options1.index(blocksplit_value))
+combobox2.grid(row=4, column=1, padx=10, pady=10, sticky=tk.W + tk.E)
 
 # 确认按钮
 def on_confirm():
-    # 收集输入信息
     input1 = entry1.get()
     input2 = entry2.get()
     input3 = entry3.get()
     selected_option = combobox1.get()
     selected_option1 = combobox2.get()
-    # 显示确认对话框
+    input_Auth = entry_Auth.get()
+
     if messagebox.askokcancel("确认", "你确定要提交吗？"):
-        # 打印收集到的数据
-        print(f"输入框1: {input1}")
-        print(f"输入框2: {input2}")
-        print(f"输入框3: {input3}")
-        print(f"选择的选项: {selected_option}")
-        print(f"选择的选项2: {selected_option1}")
-        # 创建ConfigParser对象
-        config = configparser.ConfigParser()
-
-        # 读取现有的INI文件
-        with open(f'{os.getcwd()}/config.ini', 'r', encoding='gbk') as file:
-            config.read_file(file)
-
-        # 修改或添加新的键值对
-        # 如果section不存在，则会创建新的section
         if not config.has_section('Settings'):
             config.add_section('Settings')
-        config.set('Settings', 'Id', input1)  # 修改现有选项
-        config.set('Settings', 'Secret', input2)  # 添加新选项
-        config.set('Settings', 'model', selected_option)  # 添加新选项
-        config.set('Settings', 'prompt', input3)  # 添加新选项
+        config.set('Settings', 'Id', input1)
+        config.set('Settings', 'Secret', input2)
+        config.set('Settings', 'model', selected_option)
+        config.set('Settings', 'prompt', input3)
+        config.set('Settings', 'SparkAuth', input_Auth)
 
         if selected_option1 == '是':
             config.set('Settings', 'BlockSplit', '1')
         else:
             config.set('Settings', 'BlockSplit', '0')
 
-        # 同样可以修改其他section
-        if not config.has_section('Section2'):
-            config.add_section('Section2')
-        config.set('Section2', 'optionA', 'modified_valueA')  # 修改现有选项
-
-        # 写回文件
-        with open('example.ini', 'w') as configfile:
+        with open(config_file_path, 'w', encoding='ansi') as configfile:
             config.write(configfile)
-        subprocess.run(f'{os.getcwd()}/Public.exe')
 
+        subprocess.run([f'{os.getcwd()}/Public.exe'])
 
 confirm_button = ttk.Button(root, text="确认", command=on_confirm)
-confirm_button.grid(row=5, column=0, columnspan=2, pady=20)
+confirm_button.grid(row=7, column=0, columnspan=2, pady=20)
 
 # 运行主循环
 root.mainloop()

@@ -1,5 +1,6 @@
 # QQBot VICE created by Henley_EvoSphere
 # See https://q.qq.com/qqbot/#/developer/
+# See https://github.com/Henley04/VicePublic/
 import time
 import os
 import configparser
@@ -7,22 +8,17 @@ import re
 import botpy
 from botpy.types.message import Message
 import requests
-import chardet
 import json
+
 # 指定 INI 文件路径
-# 获取并打印当前工作目录
-current_working_directory = os.getcwd()
-print(f"Current working directory: {current_working_directory}")
-file_path = f'{current_working_directory}/config.ini'
+file_path = f'{os.getcwd()}/config.ini'
 
 # 创建 ConfigParser 对象
 config = configparser.ConfigParser()
 
 # 读取 INI 文件
-# 以GBK编码打开文件
-with open(f'{os.getcwd()}/config.ini', 'r', encoding='gbk') as file:
+with open(file_path, 'r', encoding='ansi') as file:
     config.read_file(file)
-
 
 # 如果没有默认的 section，添加一个
 if config.has_section('Settings'):
@@ -31,23 +27,25 @@ if config.has_section('Settings'):
     print(f"Original model: {config.get('Settings', 'model', fallback='default_value')}")
     print(f"Original BlockSplit: {config.getint('Settings', 'BlockSplit', fallback=1)}")
     print(f"Original Id: {config.get('Settings', 'Id', fallback='default_value')}")
-    print(f"Original Id: {config.get('Settings', 'Secret', fallback='default_value')}")
+    print(f"Original Secret: {config.get('Settings', 'Secret', fallback='default_value')}")
+    print(f"Original Auth: {config.get('Settings', 'SparkAuth', fallback='default_value')}")
     print("INI 文件已成功读取。")
-
 else:
     print('ErrorINISectionNotFound:[Settings]')
     print("INI 读取失败。")
+
 # 将修改后的配置写回文件
-with open(file_path, 'w') as configfile:
+with open(file_path, 'w', encoding='ansi') as configfile:
     config.write(configfile)
 
 
-if config.getint('DEFAULT', 'BlockSplit', fallback=1) == 1:
+if config.getint('Settings', 'BlockSplit', fallback=1) == 1:
     IfUseBlock = True
-Prompt = config.get('DEFAULT', 'prompt', fallback='default_value')
-AppId = config.get('DEFAULT', 'Id', fallback='default_value')
-AppSecret = config.get('DEFAULT', 'Secret', fallback='default_value')
-Model = config.get('DEFAULT', 'model', fallback='default_value')
+Prompt = config.get('Settings', 'prompt', fallback='default_value')
+AppId = config.get('Settings', 'Id', fallback='default_value')
+AppSecret = config.get('Settings', 'Secret', fallback='default_value')
+Model = config.get('Settings', 'model', fallback='default_value')
+SparkAuth = config.get('Settings', 'SparkAuth', fallback='default_value')
 class Chat(botpy.Client):
     async def on_at_message_create(self, message: Message):
         global SparkAiResponse
@@ -83,7 +81,7 @@ class Chat(botpy.Client):
 
         # 示例
         text = MsgTxt
-        bad_words = ["垃圾", "恶心", "脑残", "孙逸轩", "孙艺轩", "孙"]
+        bad_words = ["垃圾", "恶心", "脑残"]
         if IfUseBlock:
             bad_words = []
         filtered_text, has_bad_words = filter_bad_words(text, bad_words)
@@ -120,7 +118,7 @@ class Chat(botpy.Client):
                     "stream": True
                 }
                 header = {
-                    "Authorization": "Bearer ZJndYYtMKLWeUsWcfQWQ:nxyIAtRdmEpmyEDBonAe"
+                    "Authorization": SparkAuth
                 }
 
                 response = requests.post(url, headers=header, json=data, stream=True)
@@ -130,7 +128,7 @@ class Chat(botpy.Client):
                     for line in response.iter_lines():
                         if line:  # 确保line不是空的
                             # 自动检测编码
-                            detected_encoding = chardet.detect(line)['encoding']
+                            detected_encoding = 'utf-8'
                             decoded_line = line.decode(detected_encoding or 'utf-8', errors='replace')
 
                             # 去除可能存在的BOM
@@ -179,7 +177,7 @@ class Chat(botpy.Client):
 
                 # 输出拼接的内容
                 print(full_content)
-                await self.api.post_message(channel_id=cid, content=f"你好,身份识别代号{user_ids}空裔！", msg_id="AtResponse")
+                await self.api.post_message(channel_id=cid, content=f"你好！", msg_id="AtResponse")
                 await self.api.post_message(channel_id=cid, content=full_content, msg_id="AtResponse")
                 UserID = message.author.id
                 print(f'UserId={UserID}')
@@ -196,3 +194,4 @@ intents = botpy.Intents(public_guild_messages=True, direct_message=True)
 
 client = Chat(intents=intents)
 client.run(appid=AppId, secret=AppSecret)
+print(AppId, AppSecret)
