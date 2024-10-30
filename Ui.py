@@ -56,56 +56,37 @@ style = ttk.Style(root)
 style.theme_use('clam')
 
 # 标签与输入框
-label1 = ttk.Label(root, text="AppID:")
-label1.grid(row=0, column=0, padx=10, pady=10, sticky=tk.W)
+def create_label_entry(parent, text, row, default_value):
+    label = ttk.Label(parent, text=text)
+    label.grid(row=row, column=0, padx=10, pady=10, sticky=tk.W)
+    entry = ttk.Entry(parent, width=30)
+    entry.grid(row=row, column=1, padx=10, pady=10, sticky=tk.W + tk.E)
+    entry.insert(0, default_value)
+    return entry
 
-entry1 = ttk.Entry(root, width=30)
-entry1.grid(row=0, column=1, padx=10, pady=10, sticky=tk.W + tk.E)
-entry1.insert(0, config.get('Settings', 'Id', fallback=''))
+entry1 = create_label_entry(root, "AppID:", 0, config.get('Settings', 'Id', fallback=''))
+entry2 = create_label_entry(root, "AppSecret:", 1, config.get('Settings', 'Secret', fallback=''))
+entry3 = create_label_entry(root, "提示词:", 2, config.get('Settings', 'prompt', fallback=''))
+entry_Auth = create_label_entry(root, "SparkAuth:", 5, config.get('Settings', 'SparkAuth', fallback=''))
 
-label2 = ttk.Label(root, text="AppSecret:")
-label2.grid(row=1, column=0, padx=10, pady=10, sticky=tk.W)
-
-entry2 = ttk.Entry(root, width=30)
-entry2.grid(row=1, column=1, padx=10, pady=10, sticky=tk.W + tk.E)
-entry2.insert(0, config.get('Settings', 'Secret', fallback=''))
-
-label_Auth = ttk.Label(root, text="SparkAuth:")
-label_Auth.grid(row=5, column=0, padx=10, pady=10, sticky=tk.W)
-
-entry_Auth = ttk.Entry(root, width=30)
-entry_Auth.grid(row=5, column=1, padx=10, pady=10, sticky=tk.W + tk.E)
-entry_Auth.insert(0, config.get('Settings', 'SparkAuth', fallback=''))
-
-label3 = ttk.Label(root, text="提示词:")
-label3.grid(row=2, column=0, padx=10, pady=10, sticky=tk.W)
-
-entry3 = ttk.Entry(root, width=30)
-entry3.grid(row=2, column=1, padx=10, pady=10, sticky=tk.W + tk.E)
-entry3.insert(0, config.get('Settings', 'prompt', fallback=''))
-
-label4 = ttk.Label(root, text=f'IP:{ip}')
+label4 = ttk.Label(root, text=f'IP: {ip}')
 label4.grid(row=6, column=0, padx=10, pady=10, sticky=tk.W)
 
 # 下拉选择框
-label_model = ttk.Label(root, text="模型:")
-label_model.grid(row=3, column=0, padx=10, pady=10, sticky=tk.W)
+def create_combobox(parent, text, row, values, default_value):
+    label = ttk.Label(parent, text=text)
+    label.grid(row=row, column=0, padx=10, pady=10, sticky=tk.W)
+    combobox = ttk.Combobox(parent, values=values, state='readonly')
+    combobox.current(values.index(default_value))
+    combobox.grid(row=row, column=1, padx=10, pady=10, sticky=tk.W + tk.E)
+    return combobox
 
 options = ['4.0Ultra', 'general', 'N/A']
-combobox1 = ttk.Combobox(root, values=options, state='readonly')
-model_default = config.get('Settings', 'model', fallback='4.0Ultra')
-combobox1.current(options.index(model_default))
-combobox1.grid(row=3, column=1, padx=10, pady=10, sticky=tk.W + tk.E)
-
-label_ifblock = ttk.Label(root, text="IfBlock:")
-label_ifblock.grid(row=4, column=0, padx=10, pady=10, sticky=tk.W)
+combobox1 = create_combobox(root, "模型:", 3, options, config.get('Settings', 'model', fallback='4.0Ultra'))
 
 options1 = ['是', '否']
-combobox2 = ttk.Combobox(root, values=options1, state='readonly')
-blocksplit_default = config.get('Settings', 'BlockSplit', fallback='是')
-blocksplit_value = '是' if blocksplit_default == '1' else '否'
-combobox2.current(options1.index(blocksplit_value))
-combobox2.grid(row=4, column=1, padx=10, pady=10, sticky=tk.W + tk.E)
+blocksplit_value = '是' if config.get('Settings', 'BlockSplit', fallback='1') == '1' else '否'
+combobox2 = create_combobox(root, "IfBlock:", 4, options1, blocksplit_value)
 
 # 确认按钮
 def on_confirm():
@@ -115,7 +96,7 @@ def on_confirm():
     selected_option = combobox1.get()
     selected_option1 = combobox2.get()
     input_Auth = entry_Auth.get()
-
+    
     if messagebox.askokcancel("确认", "你确定要提交吗？"):
         if not config.has_section('Settings'):
             config.add_section('Settings')
@@ -124,15 +105,10 @@ def on_confirm():
         config.set('Settings', 'model', selected_option)
         config.set('Settings', 'prompt', input3)
         config.set('Settings', 'SparkAuth', input_Auth)
-
-        if selected_option1 == '是':
-            config.set('Settings', 'BlockSplit', '1')
-        else:
-            config.set('Settings', 'BlockSplit', '0')
-
+        config.set('Settings', 'BlockSplit', '1' if selected_option1 == '是' else '0')
+        
         with open(config_file_path, 'w', encoding='ansi') as configfile:
             config.write(configfile)
-
         subprocess.run([f'{os.getcwd()}/Public.exe'])
 
 confirm_button = ttk.Button(root, text="确认", command=on_confirm)
