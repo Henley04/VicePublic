@@ -1,0 +1,10 @@
+{
+  "profiles": {
+    "NewStart (Package)": {
+      "commandName": "MsixPackage"
+    },
+    "NewStart (Unpackaged)": {
+      "commandName": "Project"
+    }
+  }
+}
