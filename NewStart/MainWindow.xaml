@@ -10,23 +10,23 @@
         <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center">
             <TextBox
                 x:Name="AppIdTextBox"
-                Margin="10"
+                Margin="250,10,-250,10"
                 PlaceholderText="AppID" />
             <TextBox
                 x:Name="AppSecretTextBox"
-                Margin="10"
+                Margin="250,10,-250,10"
                 PlaceholderText="AppSecret" />
             <TextBox
                 x:Name="PromptTextBox"
-                Margin="10"
+                Margin="250,10,-250,10"
                 PlaceholderText="提示词" />
             <TextBox
                 x:Name="SparkAuthTextBox"
-                Margin="10"
+                Margin="250,10,-250,10"
                 PlaceholderText="SparkAuth" />
             <ComboBox
                 x:Name="ModelComboBox"
-                Margin="10"
+                Margin="250,10,-250,10"
                 PlaceholderText="选择模型">
                 <ComboBoxItem Content="4.0Ultra" />
                 <ComboBoxItem Content="general" />
@@ -34,20 +34,33 @@
             </ComboBox>
             <ComboBox
                 x:Name="IfBlockComboBox"
-                Margin="10"
+                Margin="250,10,-250,10"
                 PlaceholderText="选择IfBlock">
                 <ComboBoxItem Content="是" />
                 <ComboBoxItem Content="否" />
             </ComboBox>
             <TextBlock
                 x:Name="IpTextBlock"
-                Margin="10"
+                Margin="250,10,-250,10"
                 Text="IP: " />
             <Button
                 x:Name="ConfirmButton"
-                Margin="10"
+                Margin="250,10,-250,10"
                 Click="OnConfirmClick"
                 Content="确认" />
+        </StackPanel>
+        <StackPanel HorizontalAlignment="Left" VerticalAlignment="Top">
+            <TextBlock
+                x:Name="Welcome"
+                Text="Welcome to Vice!"
+                FontSize="34"
+                Margin="30,30,10,10"/>
+            <Button
+                x:Name="About"
+                Content="About this software"
+                Click="About_Click">
+                
+            </Button>
         </StackPanel>
     </Grid>
 </Window>

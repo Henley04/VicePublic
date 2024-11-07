@@ -126,5 +126,16 @@ namespace SetServerINI
             AppWindow appWindow = AppWindow.GetFromWindowId(windowId);
             appWindow.Resize(new Windows.Graphics.SizeInt32(width, height));
         }
+
+        private void About_Click(object sender, RoutedEventArgs e)
+        {
+            var AboutInfo = new ContentDialog
+            {
+                Title = "About",
+                Content = "Copyright(C) EvoSphere Studio ",
+                PrimaryButtonText = "È·¶¨",
+                XamlRoot = this.Content.XamlRoot // Set the XamlRoot property
+            };
+        }
     }
 }
